@@ -1,0 +1,61 @@
+editor.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>TANTERcreativity · редактор галереи</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="hero">
+    <h1>TANTERcreativity · редактор галереи</h1>
+    <p>Вставь ссылки на 8 изображений. Они появятся на <code>index.html</code>.</p>
+  </div>
+
+  <main>
+    <section class="section dark-2">
+      <h2>Настройка галереи (8 слотов)</h2>
+
+      <form class="editor-form" id="galleryForm">
+        <label>
+          1. URL изображения
+          <input type="text" name="img1" placeholder="https://example.com/image1.jpg">
+        </label>
+        <label>
+          2. URL изображения
+          <input type="text" name="img2" placeholder="https://example.com/image2.jpg">
+        </label>
+        <label>
+          3. URL изображения
+          <input type="text" name="img3" placeholder="https://example.com/image3.jpg">
+        </label>
+        <label>
+          4. URL изображения
+          <input type="text" name="img4" placeholder="https://example.com/image4.jpg">
+        </label>
+        <label>
+          5. URL изображения
+          <input type="text" name="img5" placeholder="https://example.com/image5.jpg">
+        </label>
+        <label>
+          6. URL изображения
+          <input type="text" name="img6" placeholder="https://example.com/image6.jpg">
+        </label>
+        <label>
+          7. URL изображения
+          <input type="text" name="img7" placeholder="https://example.com/image7.jpg">
+        </label>
+        <label>
+          8. URL изображения
+          <input type="text" name="img8" placeholder="https://example.com/image8.jpg">
+        </label>
+
+        <button type="submit">Сохранить галерею</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="editor.js"></script>
+</body>
+</html>

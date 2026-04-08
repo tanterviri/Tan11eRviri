@@ -1,0 +1,35 @@
+main.js
+const TELEGRAM_URL = 'https://t.me/Tannter';
+const STORAGE_KEY = 'tanter_gallery_urls';
+
+// Кнопка "Добавить фото" -> Telegram
+const addPhotoBtn1 = document.getElementById('addPhotoBtn1');
+addPhotoBtn1.addEventListener('click', () => {
+  window.open(TELEGRAM_URL, '_blank');
+});
+
+// Загружаем ссылки для 8 слотов из localStorage
+function loadGalleryFromStorage() {
+  const json = localStorage.getItem(STORAGE_KEY);
+  if (!json) return;
+
+  let urls;
+  try {
+    urls = JSON.parse(json);
+  } catch (e) {
+    console.error('Ошибка JSON в localStorage', e);
+    return;
+  }
+
+  const slots = document.querySelectorAll('#fixedGallery .slot');
+  slots.forEach((img, index) => {
+    const url = urls[index];
+    if (url && typeof url === 'string' && url.trim() !== '') {
+      img.src = url;
+    } else {
+      img.src = '';
+    }
+  });
+}
+
+loadGalleryFromStorage();

@@ -1,0 +1,45 @@
+index.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>TANTERcreativity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="hero">
+    <h1>TANTERcreativity</h1>
+    <p>Творчество в темных тонах</p>
+  </div>
+
+  <main>
+    <!-- ПЕРВАЯ секция: переход в Telegram -->
+    <section class="section dark-1">
+      <h2>Галерея</h2>
+      <p>Нажми, чтобы связаться в Telegram и отправить фото.</p>
+
+      <button id="addPhotoBtn1">Добавить фото</button>
+    </section>
+
+    <!-- ВТОРАЯ секция: фиксированная галерея на 8 картинок -->
+    <section class="section dark-2">
+      <h2>Галерея работ</h2>
+      <p>Эти 8 слотов заполняются через страницу <code>editor.html</code> на этом же сайте.</p>
+
+      <div class="gallery" id="fixedGallery">
+        <img class="slot" data-slot="1" src="" alt="Work 1">
+        <img class="slot" data-slot="2" src="" alt="Work 2">
+        <img class="slot" data-slot="3" src="" alt="Work 3">
+        <img class="slot" data-slot="4" src="" alt="Work 4">
+        <img class="slot" data-slot="5" src="" alt="Work 5">
+        <img class="slot" data-slot="6" src="" alt="Work 6">
+        <img class="slot" data-slot="7" src="" alt="Work 7">
+        <img class="slot" data-slot="8" src="" alt="Work 8">
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
