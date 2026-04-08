@@ -59,6 +59,14 @@
       background: rgba(35, 35, 35, 0.9);
     }
 
+    /* Контейнер для кнопок */
+    .contacts-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
     /* Галерея 8 картинок */
     .gallery {
       margin-top: 20px;
@@ -76,7 +84,7 @@
       background: #2a2a2a;
     }
 
-    /* Кнопка */
+    /* Кнопки */
     button {
       background: #4caf50;
       color: white;
@@ -84,6 +92,7 @@
       padding: 10px 16px;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     button:hover {
@@ -98,12 +107,15 @@
   </div>
 
   <main>
-    <!-- ПЕРВАЯ секция: переход в Telegram -->
+    <!-- ПЕРВАЯ секция: переходы в Telegram и VK -->
     <section class="section dark-1">
-      <h2>Галерея</h2>
-      <p>Нажми, чтобы связаться в Telegram и отправить фото.</p>
+      <h2>Связаться со мной</h2>
+      <p>Выбери удобный способ, чтобы отправить свои работы.</p>
 
-      <button id="addPhotoBtn1">Добавить фото</button>
+      <div class="contacts-buttons">
+        <button id="addPhotoBtnTelegram">Добавить фото (Telegram)</button>
+        <button id="addPhotoBtnVK">Добавить фото (VK)</button>
+      </div>
     </section>
 
     <!-- ВТОРАЯ секция: фиксированная галерея на 8 картинок -->
@@ -126,13 +138,22 @@
 
   <script>
     const TELEGRAM_URL = 'https://t.me/Tannter';
+    const VK_URL = 'https://vk.com/ТВОЙ_ПРОФИЛЬ'; // подставь сюда свою ссылку на VK
     const STORAGE_KEY = 'tanter_gallery_urls';
 
-    // Кнопка "Добавить фото" -> Telegram
-    const addPhotoBtn1 = document.getElementById('addPhotoBtn1');
-    if (addPhotoBtn1) {
-      addPhotoBtn1.addEventListener('click', () => {
+    // Кнопка "Добавить фото (Telegram)"
+    const addPhotoBtnTelegram = document.getElementById('addPhotoBtnTelegram');
+    if (addPhotoBtnTelegram) {
+      addPhotoBtnTelegram.addEventListener('click', () => {
         window.open(TELEGRAM_URL, '_blank');
+      });
+    }
+
+    // Кнопка "Добавить фото (VK)"
+    const addPhotoBtnVK = document.getElementById('addPhotoBtnVK');
+    if (addPhotoBtnVK) {
+      addPhotoBtnVK.addEventListener('click', () => {
+        window.open(VK_URL, '_blank');
       });
     }
 
