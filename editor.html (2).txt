@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>TANTERcreativity — редактор галереи</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #f5f5f5;
+      background: #000000;
+    }
+
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 16px 40px;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-top: 0;
+      color: #aaaaaa;
+    }
+
+    .card {
+      background: #181818;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .slot-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .slot-row label {
+      width: 60px;
+      min-width: 60px;
+      color: #dddddd;
+    }
+
+    .slot-row input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #101010;
+      color: #f5f5f5;
+    }
+
+    .preview-img {
+      width: 80px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #2a2a2a;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .secondary {
+      background: #555;
+    }
+
+    .secondary:hover {
+      background: #666;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .status.ok {
+      color: #7ed957;
+    }
+
+    .status.error {
+      color: #ff6b6b;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Редактор галереи TANTERcreativity</h1>
+    <p>Здесь ты задаёшь ссылки на картинки для 8 слотов. Основной сайт (index.html) берёт их из localStorage.</p>
+
+    <div class="card">
+      <form id="galleryForm">
+        <!-- 8 строк для слотов -->
+        <div class="slot-row">
+          <label for="slot1">Слот 1:</label>
+          <input type="text" id="slot1" name="slot1" placeholder="https://...">
+          <img class="preview-img" id="preview1" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot2">Слот 2:</label>
+          <input type="text" id="slot2" name="slot2" placeholder="https://...">
+          <img class="preview-img" id="preview2" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot3">Слот 3:</label>
+          <input type="text" id="slot3" name="slot3" placeholder="https://...">
+          <img class="preview-img" id="preview3" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot4">Слот 4:</label>
+          <input type="text" id="slot4" name="slot4" placeholder="https://...">
+          <img class="preview-img" id="preview4" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot5">Слот 5:</label>
+          <input type="text" id="slot5" name="slot5" placeholder="https://...">
+          <img class="preview-img" id="preview5" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot6">Слот 6:</label>
+          <input type="text" id="slot6" name="slot6" placeholder="https://...">
+          <img class="preview-img" id="preview6" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot7">Слот 7:</label>
+          <input type="text" id="slot7" name="slot7" placeholder="https://...">
+          <img class="preview-img" id="preview7" alt="">
+        </div>
+
+        <div class="slot-row">
+          <label for="slot8">Слот 8:</label>
+          <input type="text" id="slot8" name="slot8" placeholder="https://...">
+          <img class="preview-img" id="preview8" alt="">
+        </div>
+
+        <div class="note">
+          Можно использовать прямые ссылки на картинки (например, из хостинга или GitHub raw), либо пути типа <code>images/work1.jpg</code>.
+        </div>
+
+        <div class="buttons">
+          <button type="button" id="saveBtn">Сохранить в localStorage</button>
+          <button type="button" class="secondary" id="clearBtn">Очистить все слоты</button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'tanter_gallery_urls';
+
+    const form = document.getElementById('galleryForm');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusEl = document.getElementById('status');
+
+    const inputs = [];
+    const previews = [];
+
+    for (let i = 1; i <= 8; i++) {
+      inputs[i] = document.getElementById('slot' + i);
+      previews[i] = document.getElementById('preview' + i);
+    }
+
+    function updatePreviews() {
+      for (let i = 1; i <= 8; i++) {
+        const url = inputs[i].value.trim();
+        if (url) {
+          previews[i].src = url;
+        } else {
+          previews[i].src = '';
+        }
+      }
+    }
+
+    function loadFromStorage() {
+      const json = localStorage.getItem(STORAGE_KEY);
+      if (!json) {
+        statusEl.textContent = 'В localStorage пока нет сохранённых ссылок.';
+        statusEl.className = 'status';
+        return;
+      }
+
+      try {
+        const urls = JSON.parse(json);
+        for (let i = 0; i < 8; i++) {
+          const value = urls[i] || '';
+          inputs[i + 1].value = value;
+        }
+        updatePreviews();
+        statusEl.textContent = 'Данные загружены из localStorage.';
+        statusEl.className = 'status ok';
+      } catch (e) {
+        console.error('Ошибка JSON при чтении localStorage', e);
+        statusEl.textContent = 'Ошибка чтения данных из localStorage.';
+        statusEl.className = 'status error';
+      }
+    }
+
+    function saveToStorage() {
+      const urls = [];
+      for (let i = 1; i <= 8; i++) {
+        urls.push(inputs[i].value.trim());
+      }
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(urls));
+        updatePreviews();
+        statusEl.textContent = 'Ссылки сохранены в localStorage. Обнови основной сайт, чтобы увидеть изменения.';
+        statusEl.className = 'status ok';
+      } catch (e) {
+        console.error('Ошибка записи в localStorage', e);
+        statusEl.textContent = 'Не удалось сохранить в localStorage.';
+        statusEl.className = 'status error';
+      }
+    }
+
+    function clearAll() {
+      for (let i = 1; i <= 8; i++) {
+        inputs[i].value = '';
+      }
+      updatePreviews();
+      localStorage.removeItem(STORAGE_KEY);
+      statusEl.textContent = 'Все слоты очищены, запись в localStorage удалена.';
+      statusEl.className = 'status';
+    }
+
+    saveBtn.addEventListener('click', saveToStorage);
+    clearBtn.addEventListener('click', clearAll);
+
+    for (let i = 1; i <= 8; i++) {
+      inputs[i].addEventListener('input', updatePreviews);
+    }
+
+    loadFromStorage();
+  </script>
+</body>
+</html>
