@@ -77,7 +77,7 @@
       margin-top: 16px;
     }
 
-    /* Галерея картинок (дефолт для десктопа) */
+    /* Галерея картинок (старая авто-галерея) */
     .gallery {
       margin-top: 20px;
       display: grid;
@@ -92,6 +92,59 @@
       border-radius: 8px;
       object-fit: cover;
       background: #2a2a2a;
+    }
+
+    /* Творческая галерея (карточки) */
+    .creative-gallery-container {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .creative-item {
+      background: #111111;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .creative-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      background: #222222;
+    }
+
+    .creative-body {
+      padding: 10px 12px 12px;
+      font-size: 14px;
+    }
+
+    .creative-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .creative-meta {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-bottom: 6px;
+    }
+
+    .creative-desc {
+      font-size: 13px;
+      line-height: 1.35;
+      opacity: 0.9;
+    }
+
+    .creative-tags {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 6px;
     }
 
     /* Кнопки */
@@ -116,12 +169,20 @@
       .gallery {
         grid-template-columns: repeat(3, minmax(100px, 1fr));
       }
+
+      .creative-gallery-container {
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+      }
     }
 
     /* Малые планшеты / большие телефоны */
     @media (max-width: 768px) {
       .gallery {
         grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+
+      .creative-gallery-container {
+        grid-template-columns: 1fr 1fr;
       }
 
       .hero h1 {
@@ -137,6 +198,10 @@
     /* Телефоны */
     @media (max-width: 480px) {
       .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .creative-gallery-container {
         grid-template-columns: 1fr;
       }
 
@@ -185,10 +250,20 @@
       </div>
     </section>
 
-    <!-- ВТОРАЯ секция: авто-галерея из images.json -->
+    <!-- ВТОРАЯ секция: ТВОРЧЕСКАЯ ГАЛЕРЕЯ (карточки с описаниями) -->
     <section class="section dark-2">
+      <h2>Творческая галерея</h2>
+      <p>Серия работ в темных тонах: название, автор, год и короткая история каждой работы.</p>
+
+      <div class="creative-gallery-container" id="creativeGallery">
+        <!-- Сюда JS подставит карточки из creative.json -->
+      </div>
+    </section>
+
+    <!-- ТРЕТЬЯ секция: исходная авто-галерея из images.json -->
+    <section class="section dark-1">
       <h2>Галерея работ</h2>
-    
+      <p>Быстрый просмотр всех изображений без описаний.</p>
 
       <div class="gallery" id="autoGallery">
         <!-- Сюда JS сам добавит картинки -->
@@ -197,6 +272,7 @@
   </main>
 
   <script>
+    // Старая авто-галерея по images.json (как у тебя было)
     async function loadGallery() {
       try {
         const response = await fetch('images/images.json');
@@ -207,6 +283,8 @@
 
         const files = await response.json(); // массив имён файлов
         const container = document.getElementById('autoGallery');
+        if (!container) return;
+
         container.innerHTML = '';
 
         files.forEach((fileName) => {
@@ -221,7 +299,68 @@
       }
     }
 
+    // Новая творческая галерея по creative.json
+    async function loadCreativeGallery() {
+      try {
+        const response = await fetch('images/creative.json');
+        if (!response.ok) {
+          console.error('Не могу получить creative.json', response.status);
+          return;
+        }
+
+        const items = await response.json(); // массив объектов работ
+        const container = document.getElementById('creativeGallery');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'creative-item';
+
+          const img = document.createElement('img');
+          img.src = 'images/' + item.file;
+          img.alt = item.title || item.file;
+
+          const body = document.createElement('div');
+          body.className = 'creative-body';
+
+          const title = document.createElement('div');
+          title.className = 'creative-title';
+          title.textContent = item.title || item.file;
+
+          const meta = document.createElement('div');
+          meta.className = 'creative-meta';
+          meta.textContent = [item.author, item.year].filter(Boolean).join(' • ');
+
+          const desc = document.createElement('div');
+          desc.className = 'creative-desc';
+          desc.textContent = item.description || '';
+
+          const tags = document.createElement('div');
+          tags.className = 'creative-tags';
+          if (Array.isArray(item.tags) && item.tags.length > 0) {
+            tags.textContent = '#' + item.tags.join(' #');
+          } else {
+            tags.textContent = '';
+          }
+
+          body.appendChild(title);
+          if (meta.textContent) body.appendChild(meta);
+          if (desc.textContent) body.appendChild(desc);
+          if (tags.textContent) body.appendChild(tags);
+
+          card.appendChild(img);
+          card.appendChild(body);
+          container.appendChild(card);
+        });
+      } catch (e) {
+        console.error('Ошибка при загрузке творческой галереи', e);
+      }
+    }
+
     loadGallery();
+    loadCreativeGallery();
   </script>
 </body>
 </html>
