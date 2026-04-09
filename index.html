@@ -29,7 +29,6 @@
       padding: 20px;
     }
 
-    /* Карточка под текст в шапке */
     .hero-content {
       background: rgba(0, 0, 0, 0.6);
       padding: 20px 30px;
@@ -78,7 +77,7 @@
       margin-top: 16px;
     }
 
-    /* Галерея 8 картинок */
+    /* Галерея картинок */
     .gallery {
       margin-top: 20px;
       display: grid;
@@ -115,86 +114,59 @@
   <div class="hero">
     <div class="hero-content">
       <h1>TANTERcreativity</h1>
-      <p>Творчество в ваших деталях</p>
+      <p>Творчество в темных тонах</p>
     </div>
   </div>
 
   <main>
-    <!-- ПЕРВАЯ секция: переходы в Telegram и VK -->
+    <!-- ПЕРВАЯ секция: контакты -->
     <section class="section dark-1">
       <h2>Связаться со мной</h2>
       <p>Выбери удобный способ, чтобы отправить свои работы.</p>
 
       <div class="contacts-buttons">
-        <button id="addPhotoBtnTelegram">Добавить фото (Telegram)</button>
-        <button id="addPhotoBtnVK">Добавить фото (VK)</button>
+        <button onclick="window.open('https://t.me/Tannter', '_blank')">Telegram</button>
+        <button onclick="window.open('https://vk.com/tannter', '_blank')">VK</button>
       </div>
     </section>
 
-    <!-- ВТОРАЯ секция: фиксированная галерея на 8 картинок -->
+    <!-- ВТОРАЯ секция: авто-галерея из images.json -->
     <section class="section dark-2">
       <h2>Галерея работ</h2>
-      <p>Слоты галереи можно заполнить через редактор или напрямую из localStorage.</p>
+      <p>Картинки подгружаются автоматически из папки <code>images</code> по списку в <code>images/images.json</code>.</p>
 
-      <div class="gallery" id="fixedGallery">
-        <img class="slot" data-slot="1" src="" alt="Work 1">
-        <img class="slot" data-slot="2" src="" alt="Work 2">
-        <img class="slot" data-slot="3" src="" alt="Work 3">
-        <img class="slot" data-slot="4" src="" alt="Work 4">
-        <img class="slot" data-slot="5" src="" alt="Work 5">
-        <img class="slot" data-slot="6" src="" alt="Work 6">
-        <img class="slot" data-slot="7" src="" alt="Work 7">
-        <img class="slot" data-slot="8" src="" alt="Work 8">
+      <div class="gallery" id="autoGallery">
+        <!-- Сюда JS сам добавит картинки -->
       </div>
     </section>
   </main>
 
   <script>
-    const TELEGRAM_URL = 'https://t.me/Tannter';
-    const VK_URL = 'https://vk.com/tannter';
-    const STORAGE_KEY = 'tanter_gallery_urls';
-
-    // Кнопка "Добавить фото (Telegram)"
-    const addPhotoBtnTelegram = document.getElementById('addPhotoBtnTelegram');
-    if (addPhotoBtnTelegram) {
-      addPhotoBtnTelegram.addEventListener('click', () => {
-        window.open(TELEGRAM_URL, '_blank');
-      });
-    }
-
-    // Кнопка "Добавить фото (VK)"
-    const addPhotoBtnVK = document.getElementById('addPhotoBtnVK');
-    if (addPhotoBtnVK) {
-      addPhotoBtnVK.addEventListener('click', () => {
-        window.open(VK_URL, '_blank');
-      });
-    }
-
-    // Подгрузка ссылок для 8 слотов из localStorage
-    function loadGalleryFromStorage() {
-      const json = localStorage.getItem(STORAGE_KEY);
-      if (!json) return;
-
-      let urls;
+    async function loadGallery() {
       try {
-        urls = JSON.parse(json);
-      } catch (e) {
-        console.error('Ошибка JSON в localStorage', e);
-        return;
-      }
-
-      const slots = document.querySelectorAll('#fixedGallery .slot');
-      slots.forEach((img, index) => {
-        const url = urls[index];
-        if (url && typeof url === 'string' && url.trim() !== '') {
-          img.src = url;
-        } else {
-          img.src = '';
+        const response = await fetch('images/images.json');
+        if (!response.ok) {
+          console.error('Не могу получить images.json', response.status);
+          return;
         }
-      });
+
+        const files = await response.json(); // массив имён файлов
+        const container = document.getElementById('autoGallery');
+        container.innerHTML = '';
+
+        files.forEach((fileName) => {
+          const img = document.createElement('img');
+          img.src = 'images/' + fileName;
+          img.alt = fileName;
+          img.className = 'slot';
+          container.appendChild(img);
+        });
+      } catch (e) {
+        console.error('Ошибка при загрузке галереи', e);
+      }
     }
 
-    loadGalleryFromStorage();
+    loadGallery();
   </script>
 </body>
 </html>
